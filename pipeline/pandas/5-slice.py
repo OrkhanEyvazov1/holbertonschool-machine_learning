@@ -16,7 +16,7 @@ def slice(df):
         pd.DataFrame: The sliced DataFrame.
     """
     # Extract specific columns
-    df_subset = df[['High', 'Low', 'Close', 'Volume_BTC']]
+    df_subset = df[['High', 'Low', 'Close', 'Volume_(BTC)']]
 
     # Select every 60th row
     # The syntax is df[start:stop:step]
