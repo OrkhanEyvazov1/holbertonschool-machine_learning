@@ -6,12 +6,13 @@
 
 import pandas as pd
 
+'''doc'''
 
-def from_file(filename,delimiter):
+def from_file(filename, delimiter):
     '''
     Docstring for from_file
 
     :param filename: Description
     :param delimiter: Description
     '''
-    return pd.read_csv(filename,delimiter=delimiter)
+    return pd.read_csv(filename, delimiter=delimiter)
