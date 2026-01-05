@@ -8,6 +8,7 @@ import pandas as pd
 
 '''doc'''
 
+
 def from_file(filename, delimiter):
     '''
     Docstring for from_file
