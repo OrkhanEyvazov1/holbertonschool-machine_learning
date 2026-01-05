@@ -1,12 +1,12 @@
 #!/usr/bin/env python3
 
 
-"""doc"""
+"""doc docc"""
 
 
 import pandas as pd
 
-'''doc'''
+'''doc moc '''
 
 
 def from_file(filename, delimiter):
