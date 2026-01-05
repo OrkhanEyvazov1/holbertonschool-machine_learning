@@ -7,7 +7,7 @@ import pandas as pd
 
 def from_numpy(array):
     """
-    alphabetical and capitalized column namesi 
+    alphabetical and capitalized column name
     for a DataFrame created from a NumPy array.
     """
     num_columns = array.shape[1]
