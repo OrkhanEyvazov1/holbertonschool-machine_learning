@@ -6,10 +6,10 @@
 
 def flip_switch(df):
     """
-    Sorts the dataframe in reverse chronological order and transposes it.
 
     Args:
-        df: Input pandas DataFrame, assumed to have a datetime index or similar.
+        df: Input pandas DataFrame, assumed to have
+        a datetime index or similar.
 
     Returns:
         The transformed pandas DataFrame.
