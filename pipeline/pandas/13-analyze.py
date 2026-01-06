@@ -7,4 +7,3 @@
 def analyze(df):
     ''' doc here'''
     return df.drop(columns=['Timestamp']).describe()
-
