@@ -6,7 +6,7 @@
 
 def fill(df):
     ''' doc here '''
-    df=df.drop(columns=['Weighted_Price'])
+    df = df.drop(columns=['Weighted_Price'])
     df['Close'] = df['Close'].ffill()
 
     df['High'] = df['High'].fillna(df['Close'])
