@@ -27,8 +27,7 @@ def hierarchy(df1, df2):
     df1_filtered = df1.loc[df1.index.isin(r)]
     df2_filtered = df2.loc[df2.index.isin(r)]
 
-    df = pd.concat([df2_filtered, df1_filtered], keys=['bitstamp', 'coinbase'])
-    
+    df = pd.concat([df2_filtered, df1_filtered], keys=['bitstamp', 'coinbase']) 
     df = df.swaplevel(0, 1).sort_index()
 
     return df
