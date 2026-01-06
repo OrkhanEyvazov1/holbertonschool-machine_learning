@@ -21,6 +21,8 @@ def hierarchy(df1, df2):
     Returns:
         The concatenated pandas DataFrame.
     """
+    df1 = index(df1)
+    df2 = index(df2)
     r = range(1417411980, 1417417980 + 60, 60)
     df1_filtered = df1.loc[df1.index.isin(r)]
     df2_filtered = df2.loc[df2.index.isin(r)]
