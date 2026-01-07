@@ -16,7 +16,7 @@ def bars():
     x = np.arange(len(people))
     bottom = np.zeros(len(people))
     for counts, label, color in zip(fruit, fruit_types, colors):
-        plt.bar(x, counts, bottom=bottom, width=0.5, color=color, label=label.capitalize())
+        plt.bar(x, counts, bottom=bottom, width=0.5, color=color, label=label)
         bottom += counts
     plt.xticks(x, people)
     plt.yticks(np.arange(0, 81, 10))
