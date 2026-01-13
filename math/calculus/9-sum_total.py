@@ -3,11 +3,10 @@
 
 '''doc heree'''
 
-
 def summation_i_squared(n):
-    '''sum of i squared'''
-    if not isinstance(n, int) or n < 0:
+    """Calculate the sum of i squared from 1 to n."""
+    if type(n) is not int or n < 0:
         return None
-    
+
     result = (n * (n + 1) * (2 * n + 1)) // 6
     return result
