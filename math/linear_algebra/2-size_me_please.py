@@ -6,10 +6,15 @@
 
 def matrix_shape(matrix):
     ''' shape of matrix '''
-    if not matrix:
-        return [0]
-
-    if isinstance(matrix[0], list):
-        return [len(matrix), len(matrix[0])]
-    else:
-        return [len(matrix)]
+    shape = []
+    current_layer = matrix
+    
+    while isinstance(current_layer, list):
+        shape.append(len(current_layer))
+        
+        if len(current_layer) == 0:
+            break
+            
+        current_layer = current_layer[0]
+        
+    return shape
