@@ -106,7 +106,6 @@ def cofactor(matrix):
     return cofactor_matrix
 
 
-
 def matrix_transpose(matrix):
     ''' transpose it '''
     for i in range(len(matrix)):
