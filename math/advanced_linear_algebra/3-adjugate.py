@@ -106,6 +106,14 @@ def cofactor(matrix):
     return cofactor_matrix
 
 
+def matrix_transpose(matrix):
+    ''' transpose it '''
+    for i in range(len(matrix)):
+        for j in range(i, len(matrix[0])):
+            matrix[i][j], matrix[j][i] = matrix[j][i], matrix[i][j]
+    return matrix
+
+
 def adjugate(matrix):
     """
     Compute the adjugate of a given matrix
