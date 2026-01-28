@@ -2,6 +2,20 @@
 ''' cofactor def '''
 
 
+def multi_determinant(matrix):
+    """
+    Helper function to compute determinant of matrix larger than 2x2
+    Args:
+        matrix: list of lists whose determinant should be calculated
+    Returns: Determinant of matrix
+    """
+    det = 0
+    for c in range(len(matrix)):
+        sub_matrix = [row[:c] + row[c + 1:] for row in matrix[1:]]
+        det += ((-1) ** c) * matrix[0][c] * determinant(sub_matrix)
+    return det
+
+
 def determinant(matrix):
     """
     calculates the determinant of a matrix
