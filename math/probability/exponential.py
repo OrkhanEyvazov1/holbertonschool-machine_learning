@@ -8,6 +8,8 @@ class Exponential:
     '''
     Docstring for Exponential
     '''
+    e = 2.7182818285
+
     def __init__(self, data=None, lambtha=1.):
         self.lambtha = float(lambtha)
 
