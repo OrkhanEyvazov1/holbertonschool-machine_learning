@@ -4,6 +4,8 @@
 
 class Poisson:
     '''class of poisson d '''
+    e = 2.7182818285
+
     def __init__(self, data=None, lambtha=1.):
         ''' init pack '''
         self.lambtha = float(lambtha)
@@ -18,7 +20,6 @@ class Poisson:
                 raise ValueError("data must contain multiple values")
 
             self.lambtha = float(sum(data) / len(data))
-
 
     def pmf(self, k):
         """
