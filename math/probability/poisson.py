@@ -51,7 +51,7 @@ class Poisson:
             factorial_i = 1
             for j in range(1, i + 1):
                 factorial_i *= j
-            pmf_i =
-            Poisson.e ** -self.lambtha * self.lambtha ** i / factorial_i
+            pmf_i = (Poisson.e ** -self.lambtha *
+                     self.lambtha ** i / factorial_i)
             cdf += pmf_i
         return cdf
