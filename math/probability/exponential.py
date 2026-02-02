@@ -5,6 +5,9 @@ Docstring for math tasks
 
 
 class Exponential:
+    '''
+    Docstring for Exponential
+    '''
     def __init__(self, data=None, lambtha=1.):
         self.lambtha = float(lambtha)
 
