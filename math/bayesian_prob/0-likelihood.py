@@ -2,6 +2,7 @@
 '''
 Docstring for math tasks
 '''
+import numpy as np
 
 
 def likelihood(x, n, P):
