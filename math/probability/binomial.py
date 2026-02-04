@@ -42,12 +42,14 @@ class Binomial:
             return 0
         factorial_k = 1
         factorial_n_k = 1
+        factorial_n = 1
         for i in range(1, k + 1):
             factorial_k *= i
         for j in range(1, self.n - k + 1):
             factorial_n_k *= j
-        coefficient = (factorial_k * factorial_n_k) / (
-            self.n * (self.n - 1) // 2)
+        for m in range(1, self.n + 1):
+            factorial_n *= m
+        coefficient = factorial_n / (factorial_k * factorial_n_k)
         pmf = coefficient * (self.p ** k) * ((1 - self.p) ** (self.n - k))
         return pmf
 
@@ -61,6 +63,9 @@ class Binomial:
         if k < 0:
             return 0
         cdf = 0
+        factorial_n = 1
+        for i in range(1, self.n + 1):
+            factorial_n *= i
         for i in range(0, k + 1):
             factorial_i = 1
             factorial_n_i = 1
@@ -68,8 +73,7 @@ class Binomial:
                 factorial_i *= j
             for m in range(1, self.n - i + 1):
                 factorial_n_i *= m
-            coefficient = (factorial_i * factorial_n_i) / (
-                self.n * (self.n - 1) // 2)
+            coefficient = factorial_n / (factorial_i * factorial_n_i)
             pmf_i = (coefficient * (self.p ** i) *
                      ((1 - self.p) ** (self.n - i)))
             cdf += pmf_i
