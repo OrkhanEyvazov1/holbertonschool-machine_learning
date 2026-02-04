@@ -45,3 +45,27 @@ class Normal:
         """
         x = z * self.stddev + self.mean
         return x
+
+    def pdf(self, x):
+        """
+        Calculates the value of the PDF for a given x-value
+        Args:
+            x: x-value
+        Returns: PDF value for x
+        """
+        coefficient = 1 / (self.stddev * (2 * Normal.pi) ** 0.5)
+        exponent = -0.5 * ((x - self.mean) / self.stddev) ** 2
+        pdf = coefficient * Normal.e ** exponent
+        return pdf
+
+    def cdf(self, x):
+        """ Calculates the value of the CDF for a given x-value
+        Args:
+            x: x-value
+        Returns: CDF value for x
+        """
+        z = (x - self.mean) / (self.stddev * 2 ** 0.5)
+        erf_approx = (z - (z ** 3) / 3 + (z ** 5) / 10 - (z ** 7) / 42 +
+                      (z ** 9) / 216)
+        cdf = 0.5 * (1 + (2 / (Normal.pi ** 0.5)) * erf_approx)
+        return cdf
