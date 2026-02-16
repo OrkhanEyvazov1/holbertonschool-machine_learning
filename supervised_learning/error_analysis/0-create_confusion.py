@@ -5,6 +5,9 @@ one-hot encoded labels and logits.
 """
 
 
+import numpy as np
+
+
 def create_confusion_matrix(labels, logits):
     """
     Create a confusion matrix frm one-hot encoded labels and logits.
