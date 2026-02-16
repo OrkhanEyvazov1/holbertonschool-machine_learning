@@ -1,13 +1,13 @@
 #!/usr/bin/env python3
 """This module contains a function
 to create a confusion matrix
-from one-hot encoded labels and logits.
+one-hot encoded labels and logits.
 """
 
 
 def create_confusion_matrix(labels, logits):
     """
-    Create a confusion matrix from one-hot encoded labels and logits.
+    Create a confusion matrix frm one-hot encoded labels and logits.
 
     Args:
         labels (np.ndarray): True labels, shape (m, classes).
