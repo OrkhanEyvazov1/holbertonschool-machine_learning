@@ -28,7 +28,7 @@ def create_confusion_matrix(labels, logits):
     true_idx = labels.argmax(axis=1)
     pred_idx = logits.argmax(axis=1)
 
-    confusion = np.zeros((classes, classes), dtype=int)
+    confusion = np.zeros((classes, classes))
     for t, p in zip(true_idx, pred_idx):
         confusion[t, p] += 1
     return confusion
