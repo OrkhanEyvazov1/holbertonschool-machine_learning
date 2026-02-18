@@ -54,6 +54,17 @@ class Node:
             else:
                 return 1 + left_count + right_count
 
+    def __str__(self):
+        '''string representation of a node in the decision tree'''
+        if self.is_leaf:
+            return self.left_child_add_prefix(self.left_child.__str__())
+        else:
+            left_str = self.left_child.__str__() if self.left_child else ""
+            right_str = self.right_child.__str__() if self.right_child else ""
+            return (f"[feature={self.feature}, threshold={self.threshold}]\n" +
+                    self.left_child_add_prefix(left_str) +
+                    self.right_child_add_prefix(right_str))
+
     def left_child_add_prefix(self, text):
         '''lcap doc'''
         lines = text.split("\n")
@@ -69,17 +80,6 @@ class Node:
         for x in lines[1:]:
             new_text += ("       " + x) + "\n"
         return new_text
-
-    def __str__(self):
-        '''string representation of a node in the decision tree'''
-        if self.is_leaf:
-            return self.left_child_add_prefix(self.left_child.__str__())
-        else:
-            left_str = self.left_child.__str__() if self.left_child else ""
-            right_str = self.right_child.__str__() if self.right_child else ""
-            return (f"[feature={self.feature}, threshold={self.threshold}]\n" +
-                    self.left_child_add_prefix(left_str) +
-                    self.right_child_add_prefix(right_str))
 
 
 class Leaf(Node):
