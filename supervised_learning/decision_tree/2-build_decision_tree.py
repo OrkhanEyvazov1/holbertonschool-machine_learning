@@ -57,10 +57,10 @@ class Node:
     def __str__(self):
         '''string representation of a node in the decision tree'''
         if self.is_leaf:
-            return self.left_child_add_prefix(self.left_child.__str__())
+            return f"{self.left_child}\n"
         else:
-            left_str = self.left_child.__str__() if self.left_child else ""
-            right_str = self.right_child.__str__() if self.right_child else ""
+            left_str = f'{self.left_child}' if self.left_child else ''
+            right_str = f'{self.right_child}' if self.right_child else ''
             return (f"[feature={self.feature}, threshold={self.threshold}]\n" +
                     self.left_child_add_prefix(left_str) +
                     self.right_child_add_prefix(right_str))
@@ -70,7 +70,8 @@ class Node:
         lines = text.split("\n")
         new_text = "    +--" + lines[0] + "\n"
         for x in lines[1:]:
-            new_text += ("    |  " + x) + "\n"
+            if x:
+                new_text += ("    |  " + x) + "\n"
         return new_text
 
     def right_child_add_prefix(self, text):
@@ -78,7 +79,8 @@ class Node:
         lines = text.split("\n")
         new_text = "    +--" + lines[0] + "\n"
         for x in lines[1:]:
-            new_text += ("       " + x) + "\n"
+            if x:
+                new_text += ("       " + x) + "\n"
         return new_text
 
 
