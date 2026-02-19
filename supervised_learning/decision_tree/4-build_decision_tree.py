@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-""" print decision tree"""
+"""the update_bounds method"""
 import numpy as np
 
 
@@ -19,7 +19,7 @@ def left_child_add_prefix(text):
     lines = text.split("\n")
     new_text = "    +--" + lines[0] + "\n"
     for x in lines[1:]:
-        new_text += ("    |  " + x) + "\n"
+        new_text += ("    |  "+x) + "\n"
     return new_text
 
 
@@ -166,31 +166,46 @@ class Node:
             right_str = right_child_add_prefix(str(self.right_child))
         else:
             right_str = ""
-        return (f"{Type}[feature={self.feature}, threshold={self.threshold}]\n"
-                f"{left_str}{right_str}".rstrip())
+        return f"{Type}[feature={self.feature}, threshold=\
+{self.threshold}]\n{left_str}{right_str}".rstrip()
+
+    def get_leaves_below(self):
+        """
+        Returns a list of all leaves below this node.
+
+        Returns:
+        list
+            The list of all leaves below this node.
+        """
+        if self.is_leaf:
+            return [self]
+        leaves = []
+        if self.left_child:
+            leaves.extend(self.left_child.get_leaves_below())
+        if self.right_child:
+            leaves.extend(self.right_child.get_leaves_below())
+        return leaves
 
     def update_bounds_below(self):
         """
-        Recursively updates the upper and lower bounds for each feature
-        in the subtree rooted at this node.
+        Update the bounds for the current node and propagate the
+        bounds to its children.
         """
         if self.is_root:
+            self.lower = {0: -np.inf}
             self.upper = {0: np.inf}
-            self.lower = {0: -1 * np.inf}
 
         for child in [self.left_child, self.right_child]:
             if child:
-                child.upper = self.upper.copy()
                 child.lower = self.lower.copy()
-                if child is self.left_child:
-                    child.upper[self.feature] = min(
-                        child.upper[self.feature], self.threshold)
+                child.upper = self.upper.copy()
+                if child == self.left_child:
+                    child.lower[self.feature] = self.threshold
                 else:
-                    child.lower[self.feature] = max(
-                        child.lower[self.feature], self.threshold)
+                    child.upper[self.feature] = self.threshold
 
         for child in [self.left_child, self.right_child]:
-            if child:  # Added check to ensure child exists before recursion
+            if child:
                 child.update_bounds_below()
 
 
@@ -256,10 +271,24 @@ class Leaf(Node):
         str
             The string representation of the leaf node.
         """
-        return f"-> leaf [value={self.value}]"
+        return (f"-> leaf [value={self.value}]")
+
+    def get_leaves_below(self):
+        """
+        Returns a list of all leaves below this leaf.
+
+        Returns:
+        list
+            The list of all leaves below this leaf.
+        """
+        return [self]
 
     def update_bounds_below(self):
-        """UPDATE BOUNDS BELOW A LEAF NODE"""
+        """
+        Placeholder function for updating the
+        bounds for the current node and propagating the bounds
+        to its children.
+        """
         pass
 
 
@@ -353,8 +382,19 @@ class Decision_Tree():
         """
         return self.root.__str__() + "\n"
 
+    def get_leaves(self):
+        """
+        Returns a list of all leaves in the tree.
+
+        Returns:
+        list
+            The list of all leaves in the tree.
+        """
+        return self.root.get_leaves_below()
+
     def update_bounds(self):
         """
-        Updates the bounds for each node in the decision tree.
+        Update the bounds for the entire
+        tree starting from the root node.
         """
         self.root.update_bounds_below()
