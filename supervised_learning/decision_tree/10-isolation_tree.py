@@ -1,6 +1,8 @@
+import numpy as np
+
 #!/usr/bin/env python3
 """Isolation random tree implementation for anomaly detection."""
-import numpy as np
+
 Node = __import__('8-build_decision_tree').Node
 Leaf = __import__('8-build_decision_tree').Leaf
 
@@ -9,6 +11,7 @@ class Isolation_Random_Tree:
     """Isolation random tree class."""
 
     def __init__(self, max_depth=10, seed=0, root=None):
+        '''inittt'''
         self.rng = np.random.default_rng(seed)
         self.root = root if root else Node(is_root=True)
         self.explanatory = None
@@ -17,21 +20,27 @@ class Isolation_Random_Tree:
         self.min_pop = 1
 
     def __str__(self):
+        '''ddds'''
         return self.root.__str__() + "\n"
 
     def depth(self):
+        '''depth tree'''
         return self.root.max_depth_below()
 
     def count_nodes(self, only_leaves=False):
+        '''count dee'''
         return self.root.count_nodes_below(only_leaves=only_leaves)
 
     def update_bounds(self):
+        '''update tr'''
         self.root.update_bounds_below()
 
     def get_leaves(self):
+        '''get the leaves'''
         return self.root.get_leaves_below()
 
     def update_predict(self):
+        '''update tree predict function'''
         self.update_bounds()
         leaves = self.get_leaves()
         for leaf in leaves:
@@ -42,9 +51,11 @@ class Isolation_Random_Tree:
         )
 
     def np_extrema(self, arr):
+        '''np extrema'''
         return np.min(arr), np.max(arr)
 
     def random_split_criterion(self, node):
+        '''random split criterion'''
         sub_population = self.explanatory[node.sub_population]
         diff = 0
         while diff == 0:
@@ -57,18 +68,21 @@ class Isolation_Random_Tree:
         return feature, threshold
 
     def get_leaf_child(self, node, sub_population):
+        '''get a leaf child'''
         leaf_child = Leaf(value=node.depth + 1)
         leaf_child.depth = node.depth + 1
         leaf_child.sub_population = sub_population
         return leaf_child
 
     def get_node_child(self, node, sub_population):
+        '''get a node child'''
         n = Node()
         n.depth = node.depth + 1
         n.sub_population = sub_population
         return n
 
     def fit_node(self, node):
+        '''fit node'''
         node.feature, node.threshold = self.random_split_criterion(node)
 
         left_population = node.sub_population & (
@@ -97,6 +111,7 @@ class Isolation_Random_Tree:
             self.fit_node(node.right_child)
 
     def fit(self, explanatory, verbose=0):
+        '''fit the isolation random tree to the data'''
         self.split_criterion = self.random_split_criterion
         self.explanatory = explanatory
         self.root.sub_population = np.ones(explanatory.shape[0], dtype=bool)
