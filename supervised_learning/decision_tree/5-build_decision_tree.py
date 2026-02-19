@@ -217,26 +217,24 @@ class Node:
             if child:
                 child.update_bounds_below()
 
-        def update_indicator(self):
+    def update_indicator(self):
+        """
+        Updates the indicator function for the node.
+        """
+        def is_large_enough(x):
+            # Returns a 1D numpy array of size `n_individuals` so that the
+            # `i`-th element is `True` if the `i`-th individual has all its
+            # features > the lower bounds
+            return np.all(x > np.array(list(self.lower.values())), axis=1)
 
-            def is_large_enough(x):
+        def is_small_enough(x):
+            # Returns a 1D numpy array of size `n_individuals` so that the
+            # `i`-th element is `True` if the `i`-th individual has all its
+            # features <= the lower bounds
+            return np.all(x <= np.array(list(self.upper.values())), axis=1)
 
-                # <- fill the gap : this function returns a 1D numpy array of
-                # size `n_individuals` so that the `i`-th element of the later
-                # is `True` if the `i`-th individual has all its features > the
-                # lower bounds
-                return np.all(x > np.array(list(self.lower.values())), axis=1)
-
-            def is_small_enough(x):
-
-                # <- fill the gap : this function returns a 1D numpy array of
-                # size `n_individuals` so that the `i`-th element of the later
-                # is `True` if the `i`-th individual has all its features <=
-                # the lower bounds
-                return np.all(x <= np.array(list(self.upper.values())), axis=1)
-
-            self.indicator = lambda x: np.all(
-                np.array([is_large_enough(x), is_small_enough(x)]), axis=0)
+        self.indicator = lambda x: np.all(
+            np.array([is_large_enough(x), is_small_enough(x)]), axis=0)
 
 
 class Leaf(Node):
