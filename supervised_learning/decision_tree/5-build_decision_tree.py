@@ -225,14 +225,17 @@ class Node:
             # Returns a 1D numpy array of size `n_individuals` so that the
             # `i`-th element is `True` if the `i`-th individual has all its
             # features > the lower bounds
-            return np.all(x > np.array(list(self.lower.values())), axis=1)
+            lower_bounds = np.array([self.lower.get(i, -np.inf)
+                                     for i in range(x.shape[1])])
+            return np.all(x > lower_bounds, axis=1)
 
         def is_small_enough(x):
             # Returns a 1D numpy array of size `n_individuals` so that the
             # `i`-th element is `True` if the `i`-th individual has all its
             # features <= the lower bounds
-            return np.all(x <= np.array(list(self.upper.values())), axis=1)
-
+            upper_bounds = np.array([self.upper.get(i, np.inf)
+                                     for i in range(x.shape[1])])
+            return np.all(x <= upper_bounds, axis=1)
         self.indicator = lambda x: np.all(
             np.array([is_large_enough(x), is_small_enough(x)]), axis=0)
 
