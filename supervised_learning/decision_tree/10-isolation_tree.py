@@ -54,15 +54,17 @@ class Isolation_Random_Tree():
 
     def update_bounds(self):
         """update the bounds"""
-        pass
+        self.root.update_bounds_below()
 
     def get_leaves(self):
         """get the leaves"""
-        pass
+        return self.root.get_leaves_below()
 
     def update_predict(self):
         """update"""
-        pass  # <--- same as in Decision_Tree (but not implemented there yet)
+        self.update_bounds()
+        self.root.update_indicator()
+        self.predict = lambda x: self.root.indicator(x)
 
     def np_extrema(self, arr):
         """np   dd"""
@@ -70,25 +72,39 @@ class Isolation_Random_Tree():
 
     def random_split_criterion(self, node):
         """random split criterion"""
-        pass  # <--- same as in Decision_Tree (but not implemented there yet)
+        sub_population = self.explanatory[node.sub_population]
+        diff = 0
+        while diff == 0:
+            feature = self.rng.integers(0, self.explanatory.shape[1])
+            feature_column = sub_population[:, feature]
+            min_val, max_val = self.np_extrema(feature_column)
+            diff = max_val - min_val
+        x = self.rng.uniform()
+        threshold = (1 - x) * min_val + x * max_val
+        return feature, threshold
 
     def get_leaf_child(self, node, sub_population):
         """get a leaf child"""
-        leaf_child = Leaf(value=None)  # Value logic to be implemented
+        leaf_child = Leaf(value=node.depth + 1)
         leaf_child.depth = node.depth + 1
         leaf_child.sub_population = sub_population
         return leaf_child
 
     def get_node_child(self, node, sub_population):
         """get a node child"""
-        pass  # <--- same as in Decision_Tree
+        n = Node()
+        n.depth = node.depth + 1
+        n.sub_population = sub_population
+        return n
 
     def fit_node(self, node):
         """fit node"""
         node.feature, node.threshold = self.random_split_criterion(node)
 
-        left_population = None  # <--- to be filled
-        right_population = None  # <--- to be filled
+        left_population = node.sub_population & (
+            self.explanatory[:, node.feature] > node.threshold)
+        right_population = node.sub_population & (
+            self.explanatory[:, node.feature] <= node.threshold)
 
         is_left_leaf = (node.depth + 1 >= self.max_depth) or \
                        (np.sum(left_population) < self.min_pop)
