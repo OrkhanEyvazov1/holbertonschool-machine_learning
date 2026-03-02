@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""2. Neuron"""
+"""3. Neuron"""
 import numpy as np
 
 
@@ -46,3 +46,17 @@ class Neuron:
         Z = np.matmul(self.__W, X) + self.__b
         self.__A = 1 / (1 + np.exp(-Z))
         return self.__A
+
+    def cost(self, Y, A):
+        """Calculates the cost of the model using logistic regression
+        Args:
+            Y: numpy.ndarray with shape (1, m) that contains the correct labels
+                for the input data
+            A: numpy.ndarray with shape (1, m) containing the activated output
+                of the neuron for each example
+        Returns:
+            The cost of the model using logistic regression
+        """
+        m = Y.shape[1]
+        cost = -np.sum(Y * np.log(A) + (1 - Y) * np.log(1.0000001 - A)) / m
+        return cost
