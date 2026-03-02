@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""3. Neuron"""
+"""5. Neuron"""
 import numpy as np
 
 
@@ -96,30 +96,3 @@ class Neuron:
         db = np.sum(dZ) / m
         self.__W -= alpha * dW
         self.__b -= alpha * db
-
-    def train(self, X, Y, iterations=5000, alpha=0.05):
-        """Trains the neuron
-        Args:
-            X: numpy.ndarray with shape (nx, m) that contains the input data
-                nx: number of input features to the neuron
-                m: number of examples
-            Y: numpy.ndarray with shape (1, m) that contains the correct labels
-                for the input data
-            iterations: number of iterations to train over
-            alpha: learning rate
-        Returns:
-            The evaluation of the training data after iterations of
-            training have occurred
-        """
-        if not isinstance(iterations, int):
-            raise TypeError("iterations must be an integer")
-        if iterations < 1:
-            raise ValueError("iterations must be a positive integer")
-        if not isinstance(alpha, float):
-            raise TypeError("alpha must be a float")
-        if alpha <= 0:
-            raise ValueError("alpha must be positive")
-        for i in range(iterations):
-            A = self.forward_prop(X)
-            self.gradient_descent(X, Y, A, alpha)
-        return self.evaluate(X, Y)
