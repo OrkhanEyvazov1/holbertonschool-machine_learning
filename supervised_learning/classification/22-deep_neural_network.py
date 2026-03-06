@@ -145,7 +145,8 @@ class DeepNeuralNetwork:
             iterations: number of iterations to train over
             alpha: learning rate
         Returns:
-            The evaluation of the training data after iterations of training have occurred
+            The evaluation of the training data after iterations of
+            training have occurred
         """
         if not isinstance(iterations, int):
             raise TypeError("iterations must be an integer")
@@ -162,3 +163,4 @@ class DeepNeuralNetwork:
             self.gradient_descent(Y, cache, alpha)
 
         return self.evaluate(X, Y)
+    
