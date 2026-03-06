@@ -30,11 +30,6 @@ class DeepNeuralNetwork:
 
     def __init__(self, nx, layers, activation='sig'):
         """Constructor method
-        Args:
-            nx: number of input features to the neural network
-            layers: list representing the number of nodes in each layer of the network
-            activation: activation function to use
-            ('sig' for sigmoid, 'tanh' for hyperbolic tangent)
         """
         if not isinstance(nx, int):
             raise TypeError("nx must be an integer")
