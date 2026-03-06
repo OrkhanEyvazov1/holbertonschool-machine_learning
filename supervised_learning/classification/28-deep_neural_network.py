@@ -32,8 +32,7 @@ class DeepNeuralNetwork:
         """Constructor method
         Args:
             nx: number of input features to the neural network
-            layers: list representing the number of nodes in each layer of the
-            network
+            layers: list representing the number of nodes in each layer of the network
             activation: activation function to use
             ('sig' for sigmoid, 'tanh' for hyperbolic tangent)
         """
