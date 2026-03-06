@@ -14,15 +14,17 @@ def one_hot_encode(Y, classes):
     Returns:
         A one-hot matrix with shape (classes, m)
     """
-    if not isinstance(Y, np.ndarray):
-        raise TypeError("Y must be a numpy.ndarray")
-    if not isinstance(classes, int):
-        raise TypeError("classes must be an integer")
-    if classes <= 0:
-        raise ValueError("classes must be a positive integer")
+    if (not isinstance(Y, np.ndarray) or Y.ndim != 1 or
+            not isinstance(classes, int) or classes <= 0):
+        return None
 
     m = Y.shape[0]
-    one_hot = np.zeros((classes, m))
-    one_hot[Y, np.arange(m)] = 1
+    if np.any(Y < 0) or np.any(Y >= classes):
+        return None
 
-    return one_hot
+    try:
+        one_hot = np.zeros((classes, m))
+        one_hot[Y.astype(int), np.arange(m)] = 1
+        return one_hot
+    except Exception:
+        return None
