@@ -163,4 +163,3 @@ class DeepNeuralNetwork:
             self.gradient_descent(Y, cache, alpha)
 
         return self.evaluate(X, Y)
-    
