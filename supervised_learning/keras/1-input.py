@@ -16,7 +16,6 @@ def build_model(nx, layers, activations, lambtha, keep_prob):
     Returns:
         the keras model
     """
-    #Sequential model not allowed
     input_layer = K.Input(shape=(nx,))
     x = input_layer
     for i, nodes in enumerate(layers):
