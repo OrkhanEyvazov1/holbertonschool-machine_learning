@@ -29,7 +29,8 @@ def train_model(network, data, labels, batch_size, epochs,
             once the validation loss does not improve for a certain number of
             consecutive epochs, called patience
         patience: is the patience used for early stopping
-        learning_rate_decay: is a boolean that indicates whether learning rate decay
+        learning_rate_decay:
+        is a boolean that indicates whether learning rate decay
             should be used
         alpha: is the initial learning rate
         decay_rate: is the decay rate
