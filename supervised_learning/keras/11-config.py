@@ -8,7 +8,8 @@ def save_config(network, filename):
 
     Args:
         network: the model whose configuration should be saved
-        filename: the path of the file that the configuration should be saved to
+        filename: the path of the file that
+        the configuration should be saved to
     Returns:
         None
     """
