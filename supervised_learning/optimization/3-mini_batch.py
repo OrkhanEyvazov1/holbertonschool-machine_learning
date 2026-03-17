@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """3-mini_batch.py"""
-import numpy as np
+shuffle_data = __import__('2-shuffle_data').shuffle_data
 
 
 def mini_batch(X, Y, batch_size=32):
@@ -19,8 +19,9 @@ def mini_batch(X, Y, batch_size=32):
     """
     m = X.shape[0]
     mini_batches = []
+    shuffled_X, shuffled_Y = shuffle_data(X, Y)
     for i in range(0, m, batch_size):
-        batch_X = X[i:i + batch_size]
-        batch_Y = Y[i:i + batch_size]
+        batch_X = shuffled_X[i:i + batch_size]
+        batch_Y = shuffled_Y[i:i + batch_size]
         mini_batches.append((batch_X, batch_Y))
     return mini_batches
