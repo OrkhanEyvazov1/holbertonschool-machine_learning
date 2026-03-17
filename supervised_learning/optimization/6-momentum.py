@@ -3,15 +3,13 @@
 import tensorflow as tf
 
 
-def create_momentum_op(loss, alpha, beta1):
-    """Creates the training operation for a network in using
-    the gradient descent with momentum optimization algorithm.
+def create_momentum_op(alpha, beta1):
+    """Sets up gradient descent with momentum in TensorFlow.
 
     Args:
-        loss: the loss of the network’s prediction
         alpha: the learning rate
         beta1: the momentum weight
     Returns:
-        The momentum optimization operation
+        A TensorFlow optimizer configured for momentum
     """
-    return tf.train.MomentumOptimizer(alpha, beta1).minimize(loss)
+    return tf.keras.optimizers.SGD(learning_rate=alpha, momentum=beta1)
