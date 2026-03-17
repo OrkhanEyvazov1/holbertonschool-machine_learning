@@ -1,0 +1,26 @@
+#!/usr/bin/env python3
+"""9-Adam.py"""
+import numpy as np
+
+
+def update_variables_Adam(alpha, beta1, beta2, epsilon, var, grad, v, s):
+    """Updates a variable using the Adam optimization algorithm.
+
+    Args:
+        alpha: the learning rate
+        beta1: the weight used for the first moment
+        beta2: the weight used for the second moment
+        epsilon: a small number to avoid division by zero
+        var: a numpy.ndarray containing the variable to be updated
+        grad: a numpy.ndarray containing the gradient of var
+        v: a numpy.ndarray containing the previous first moment of var
+        s: a numpy.ndarray containing the previous second moment of var
+    Returns:
+        The updated variable and the new first and second moments, respectively
+    """
+    v = beta1 * v + (1 - beta1) * grad
+    s = beta2 * s + (1 - beta2) * np.square(grad)
+    v_corrected = v / (1 - beta1)
+    s_corrected = s / (1 - beta2)
+    var = var - alpha * v_corrected / (np.sqrt(s_corrected) + epsilon)
+    return var, v, s
