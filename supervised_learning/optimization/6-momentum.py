@@ -1,20 +1,17 @@
 #!/usr/bin/env python3
 """6-momentum.py"""
+import tensorflow as tf
 
 
-def momentum(alpha, beta, var, grad, v):
-    """Updates a variable using the gradient
-    descent with momentum optimization algorithm.
+def create_momentum_op(loss, alpha, beta1):
+    """Creates the training operation for a network in using
+    the gradient descent with momentum optimization algorithm.
 
     Args:
+        loss: the loss of the network’s prediction
         alpha: the learning rate
-        beta: the momentum weight
-        var: a numpy.ndarray containing the variable to be updated
-        grad: a numpy.ndarray containing the gradient of var
-        v: a numpy.ndarray containing the previous velocity
+        beta1: the momentum weight
     Returns:
-        The updated variable and the new velocity, respectively
+        The momentum optimization operation
     """
-    v = beta * v + (1 - beta) * grad
-    var = var - alpha * v
-    return var, v
+    return tf.train.MomentumOptimizer(alpha, beta1).minimize(loss)
