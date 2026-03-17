@@ -1,4 +1,4 @@
-#!/user/bin/env python3
+#!/usr/bin/env python3
 """10-Adam.py"""
 import tensorflow as tf
 
