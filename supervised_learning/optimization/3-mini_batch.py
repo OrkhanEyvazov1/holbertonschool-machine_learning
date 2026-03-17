@@ -3,19 +3,19 @@
 shuffle_data = __import__('2-shuffle_data').shuffle_data
 
 
-def mini_batch(X, Y, batch_size=32):
-    """Divides the data into batches.
+def create_mini_batches(X, Y, batch_size):
+    """Creates mini-batches for mini-batch gradient descent.
 
     Args:
-        X: the numpy.ndarray of shape (m, nx) to divide into batches
+        X: the numpy.ndarray of shape (m, nx) containing input data
             m: the number of data points
             nx: the number of features
-        Y: the numpy.ndarray of shape (m, classes) to divide into batches
+        Y: the numpy.ndarray of shape (m, ny) containing labels
             m: the number of data points
-            classes: the number of classes
+            ny: the number of classes
         batch_size: the number of data points in each batch
     Returns:
-        A list of tuples, where each tuple is (batch_X, batch_Y)
+        A list of tuples, where each tuple is (X_batch, Y_batch)
     """
     m = X.shape[0]
     mini_batches = []
