@@ -8,14 +8,14 @@ def l2_reg_cost(cost, lambtha, weights, L, m):
     Args:
         cost: the cost of the network without L2 regularization
         lambtha: the regularization parameter
-        weights: a list of the weights matrices of the network
-        L: the number of layers in the network
-        m: the number of data points used in the training
+        weights: a dictionary of the weights and biases (numpy.ndarrays)
+        L: the number of layers in the neural network
+        m: the number of data points used
     Returns:
         The cost of the network accounting for L2 regularization
     """
     l2_cost = 0
-    for i in range(L):
-        l2_cost += np.sum(np.square(weights[i]))
+    for i in range(1, L + 1):
+        l2_cost += np.sum(np.square(weights["W" + str(i)]))
     l2_cost *= lambtha / (2 * m)
     return cost + l2_cost
