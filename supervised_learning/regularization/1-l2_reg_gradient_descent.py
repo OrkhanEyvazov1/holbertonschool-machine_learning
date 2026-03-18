@@ -17,23 +17,13 @@ def l2_reg_gradient_descent(Y, weights, cache, alpha, lambtha, L):
         L: number of layers in the network
     """
     m = Y.shape[1]
-    
-    # Calculate initial gradient for output layer (softmax)
     dZ = cache[f'A{L}'] - Y
-    
-    # Backpropagate through each layer
     for layer in range(L, 0, -1):
-        # Calculate weight and bias gradients
         dW = ((1 / m) * np.dot(dZ, cache[f'A{layer - 1}'].T) +
               (lambtha / m) * weights[f'W{layer}'])
         db = (1 / m) * np.sum(dZ, axis=1, keepdims=True)
-        
-        # Calculate gradient for previous layer
         if layer > 1:
             dA_prev = np.dot(weights[f'W{layer}'].T, dZ)
-            # tanh derivative
             dZ = dA_prev * (1 - np.power(cache[f'A{layer - 1}'], 2))
-        
-        # Update weights and biases
         weights[f'W{layer}'] -= alpha * dW
         weights[f'b{layer}'] -= alpha * db
