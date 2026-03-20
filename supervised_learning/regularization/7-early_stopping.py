@@ -10,7 +10,8 @@ def early_stopping(cost, opt_cost, threshold, patience, count):
         opt_cost: optimal cost of the network
         threshold: maximum acceptable difference between cost and opt_cost
         patience: patience count for early stopping
-        count: count of how many times cost has been greater than opt_cost + threshold
+        count: count of how many times
+        cost has been greater than opt_cost + threshold
     Returns:
         a tuple: (True, count) if you should stop early, else (False, count)
     """
