@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
 """7-early_stopping.py"""
-import numpy as np
 
 
 def early_stopping(cost, opt_cost, threshold, patience, count):
@@ -13,10 +12,10 @@ def early_stopping(cost, opt_cost, threshold, patience, count):
         patience: patience count for early stopping
         count: count of how many times cost has been greater than opt_cost + threshold
     Returns:
-        True if you should stop gradient descent early, or False otherwise
+        a tuple: (True, count) if you should stop early, else (False, count)
     """
-    if cost > opt_cost + threshold:
-        count += 1
-    else:
+    if (opt_cost - cost) > threshold:
         count = 0
-    return count >= patience
+    else:
+        count += 1
+    return (count >= patience, count)
