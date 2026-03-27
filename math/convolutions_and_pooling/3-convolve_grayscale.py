@@ -9,12 +9,15 @@ def convolve_grayscale(images, kernel, padding='same', stride=(1, 1)):
     """
     Performs a convolution on grayscale images.
     Args:
-        images (numpy.ndarray): Array of shape (m, h, w) containing grayscale images.
-        kernel (numpy.ndarray): Array of shape (kh, kw) containing the kernel for the convolution.
+        images (numpy.ndarray):
+        Array of shape (m, h, w) containing grayscale images.
+        kernel (numpy.ndarray):
+        Array of shape (kh, kw) containing the kernel for the convolution.
         padding (str): Either 'same' or 'valid'.
         stride (tuple): Stride for the convolution.
     Returns:
-        numpy.ndarray: Array of shape (m, oh, ow) containing the convolved images.
+        numpy.ndarray:
+        Array of shape (m, oh, ow) containing the convolved images.
     """
     kh, kw = kernel.shape
     m, h, w = images.shape
