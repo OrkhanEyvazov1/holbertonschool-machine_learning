@@ -49,28 +49,22 @@ def conv_backward(dZ, A_prev, W, b, padding='same', stride=(1, 1)):
     sh, sw = stride
 
     if padding == 'same':
-        ph = ((h_prev - 1) * sh + kh - h_prev) // 2
-        pw = ((w_prev - 1) * sw + kw - w_prev) // 2
+        ph = int(np.ceil(((h_prev - 1) * sh + kh - h_prev) / 2))
+        pw = int(np.ceil(((w_prev - 1) * sw + kw - w_prev) / 2))
     else:
         ph = pw = 0
-        A_prev_pad = A_prev
 
-    h_new = (h_prev - kh + 2 * ph) // sh + 1
-    w_new = (w_prev - kw + 2 * pw) // sw + 1
+    h_new = int((h_prev - kh + 2 * ph) / sh) + 1
+    w_new = int((w_prev - kw + 2 * pw) / sw) + 1
 
-    dA_prev = np.zeros((m, h_prev + 2 * ph, w_prev + 2 * pw, c_prev))
     dW = np.zeros((kh, kw, c_prev, c_new))
     db = np.zeros((1, 1, 1, c_new))
     A_prev_padded = np.pad(
         A_prev,
-        ((0,), (ph,), (pw,), (0,)),
+        ((0, 0), (ph, ph), (pw, pw), (0, 0)),
         mode='constant'
     )
-    dA_prev_padded = np.pad(
-        dA_prev,
-        ((0,), (ph,), (pw,), (0,)),
-        mode='constant'
-    )
+    dA_prev_padded = np.zeros(A_prev_padded.shape)
     for i in range(h_new):
         for j in range(w_new):
             h_start = i * sh
@@ -90,6 +84,9 @@ def conv_backward(dZ, A_prev, W, b, padding='same', stride=(1, 1)):
             )
             db += np.sum(dZ[:, i, j, :], axis=0).reshape(1, 1, 1, c_new)
 
-    dA_prev = dA_prev_padded[:, ph:-ph, pw:-pw, :]
+    if padding == 'same':
+        dA_prev = dA_prev_padded[:, ph:h_prev+ph, pw:w_prev+pw, :]
+    else:
+        dA_prev = dA_prev_padded
 
     return dA_prev, dW, db
