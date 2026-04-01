@@ -4,88 +4,64 @@
 import numpy as np
 
 
-def conv_backward(dZ, A_prev, W, b, padding='same', stride=(1, 1)):
-    """Performs back propagation over a convolutional layer of a neural
-    network
-    Args:
-        dZ (numpy.ndarray):
-        Array of shape (m, h_new, w_new, c_new) containing
-        the partial derivatives with respect to the unactivated
-        output of the convolutional layer.
-        A_prev (numpy.ndarray):
-        Array of shape (m, h_prev, w_prev, c_prev)
-        containing the output of the
-        previous layer.
-        W (numpy.ndarray):
-        Array of shape (kh, kw, c_prev, c_new) containing
-        the kernels for the
-        convolution.
-        b (numpy.ndarray):
-        Array of shape (1, 1, 1, c_new) containing
-        the biases applied to the
-        convolution.
-        padding (str): Either 'same' or 'valid', indicating
-        the type of
-        padding used.
-        stride (tuple): Tuple of (sh, sw) containing
-        the strides for the
-        convolution.
-    Returns:
-        dA_prev (numpy.ndarray):
-            Array of shape (m, h_prev, w_prev, c_prev)
-            containing the partial derivatives with respect to
-            the output of the previous layer.
-        dW (numpy.ndarray):
-            Array of shape (kh, kw, c_prev, c_new) containing
-            the partial derivatives with respect to the kernels
-            of the convolution.
-        db (numpy.ndarray):
-            Array of shape (1, 1, 1, c_new) containing
-            the partial derivatives with respect to the biases
-            of the convolution.
+def conv_backward(dZ, A_prev, W, b, padding="same", stride=(1, 1)):
+    """
+    a function that performs backward propagation over a CNN
+    :param dZ: is a numpy.ndarray of shape (m, h_new, w_new, c_new) containing
+    the partial derivatives with respect to the unactivated output of the
+    convolutional layer
+    :param A_prev: numpy.ndarray of shape (m, h_prev, w_prev, c_prev)
+    containing the output of the previous layer
+    :param W: numpy.ndarray of shape (kh, kw, c_prev, c_new) containing the
+    kernels for the convolution
+    :param b: numpy.ndarray of shape (1, 1, 1, c_new) containing the biases
+    applied to the convolution
+    :param padding:  is a string that is either same or valid, indicating the
+    type of padding used
+    :param stride: is a tuple of (sh, sw) containing the strides for the
+    convolution
+    :return: the partial derivatives with respect to the previous layer (
+    dA_prev), the kernels (dW), and the biases (db), respectively
     """
     m, h_prev, w_prev, c_prev = A_prev.shape
+    m, h_new, w_new, c_new = dZ.shape
     kh, kw, c_prev, c_new = W.shape
     sh, sw = stride
 
-    dA_prev = np.zeros_like(A_prev)
-    dW = np.zeros_like(W)
-    db = np.zeros_like(b)
-
+    pad_h, pad_w = (0, 0)
     if padding == "same":
-        pad_h = int(np.ceil((h_prev * sh - h_new + kh - sh) / 2))
-        pad_w = int(np.ceil((w_prev * sw - w_new + kw - sw) / 2))
-        A_prev_pad = np.pad(A_prev, ((0, 0), (pad_h, pad_h),
-                                     (pad_w, pad_w), (0, 0)), mode="constant")
-    elif padding == "valid":
-        pad_h = pad_w = 0
-        A_prev_pad = A_prev
+        pad_h = int(np.ceil((((h_prev - 1) * sh + kh - h_prev) / 2)))
+        pad_w = int(np.ceil((((w_prev - 1) * sw + kw - w_prev) / 2)))
 
-    for i in range(m):
-        a_prev_pad = A_prev_pad[i]
-        dA_prev_pad = np.zeros_like(a_prev_pad)
+    dA = np.zeros(A_prev.shape)
+    dW = np.zeros(W.shape)
+    db = np.sum(dZ, axis=(0, 1, 2), keepdims=True)
 
-        for h in range(h_prev):
-            for w in range(w_prev):
-                for c in range(c_prev):
-                    vert_start = h * sh
-                    vert_end = vert_start + kh
-                    horiz_start = w * sw
-                    horiz_end = horiz_start + kw
+    A_pad = np.pad(A_prev, ((0, 0), (pad_h, pad_h), (pad_w, pad_w), (0, 0)),
+                   mode="constant", constant_values=(0, 0))
 
-                    a_slice = a_prev_pad[vert_start:vert_end,
-                                         horiz_start:horiz_end, :]
+    dA_pad = np.pad(dA, ((0, 0), (pad_h, pad_h), (pad_w, pad_w), (0, 0)),
+                    mode="constant", constant_values=(0, 0))
 
-                    dA_prev_pad[vert_start:vert_end,
-                                horiz_start:horiz_end,
-                                :] += W[:, :, :, c] * dZ[i, h, w, c]
-                    dW[:, :, :, c] += a_slice * dZ[i, h, w, c]
-                    db[:, :, :, c] += dZ[i, h, w, c]
+    # In this notation row refers to height and col to width
+    for img in range(m):
+        A_img = A_pad[img]
+        dA_img = dA_pad[img]
+        for row in range(h_new):
+            for col in range(w_new):
+                for ch in range(c_new):
+                    # corners of the slice
+                    row_start = row * sh
+                    row_end = row * sh + kh
+                    col_start = col * sw
+                    col_end = col * sw + kw
 
+                    slice_A = A_img[row_start:row_end, col_start:col_end, :]
+                    aux = W[:, :, :, ch] * dZ[img, row, col, ch]
+                    dA_img[row_start:row_end, col_start:col_end] += aux
+                    dW[:, :, :, ch] += slice_A * dZ[img, row, col, ch]
         if padding == "same":
-            dA_prev[i, :, :, :] = dA_prev_pad[pad_h:h_prev + pad_h,
-                                              pad_w:w_prev + pad_w, :]
-        elif padding == "valid":
-            dA_prev[i, :, :, :] = dA_prev_pad
-
-    return dA_prev, dW, db
+            dA[img, :, :, :] += dA_img[pad_h: -pad_h, pad_w: - pad_w]
+        if padding == "valid":
+            dA[img, :, :, :] += dA_img
+    return dA, dW, db
