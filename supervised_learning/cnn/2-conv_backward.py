@@ -53,6 +53,7 @@ def conv_backward(dZ, A_prev, W, b, padding='same', stride=(1, 1)):
         pw = ((w_prev - 1) * sw + kw - w_prev) // 2
     else:
         ph = pw = 0
+        A_prev_pad = A_prev
 
     h_new = (h_prev - kh + 2 * ph) // sh + 1
     w_new = (w_prev - kw + 2 * pw) // sw + 1
