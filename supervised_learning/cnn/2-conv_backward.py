@@ -48,45 +48,44 @@ def conv_backward(dZ, A_prev, W, b, padding='same', stride=(1, 1)):
     kh, kw, c_prev, c_new = W.shape
     sh, sw = stride
 
-    if padding == 'same':
-        ph = int(np.ceil(((h_prev - 1) * sh + kh - h_prev) / 2))
-        pw = int(np.ceil(((w_prev - 1) * sw + kw - w_prev) / 2))
-    else:
-        ph = pw = 0
+    dA_prev = np.zeros_like(A_prev)
+    dW = np.zeros_like(W)
+    db = np.zeros_like(b)
 
-    h_new = int((h_prev - kh + 2 * ph) / sh) + 1
-    w_new = int((w_prev - kw + 2 * pw) / sw) + 1
+    if padding == "same":
+        pad_h = int(np.ceil((h_prev * sh - h_new + kh - sh) / 2))
+        pad_w = int(np.ceil((w_prev * sw - w_new + kw - sw) / 2))
+        A_prev_pad = np.pad(A_prev, ((0, 0), (pad_h, pad_h),
+                                     (pad_w, pad_w), (0, 0)), mode="constant")
+    elif padding == "valid":
+        pad_h = pad_w = 0
+        A_prev_pad = A_prev
 
-    dW = np.zeros((kh, kw, c_prev, c_new))
-    db = np.zeros((1, 1, 1, c_new))
-    A_prev_padded = np.pad(
-        A_prev,
-        ((0, 0), (ph, ph), (pw, pw), (0, 0)),
-        mode='constant'
-    )
-    dA_prev_padded = np.zeros(A_prev_padded.shape)
-    for i in range(h_new):
-        for j in range(w_new):
-            h_start = i * sh
-            h_end = h_start + kh
-            w_start = j * sw
-            w_end = w_start + kw
+    for i in range(m):
+        a_prev_pad = A_prev_pad[i]
+        dA_prev_pad = np.zeros_like(a_prev_pad)
 
-            dA_prev_padded[:, h_start:h_end, w_start:w_end, :] += np.tensordot(
-                dZ[:, i, j, :],
-                W,
-                axes=([1], [3])
-            )
-            dW += np.tensordot(
-                A_prev_padded[:, h_start:h_end, w_start:w_end, :],
-                dZ[:, i, j, :],
-                axes=([0], [0])
-            )
-            db += np.sum(dZ[:, i, j, :], axis=0).reshape(1, 1, 1, c_new)
+        for h in range(h_prev):
+            for w in range(w_prev):
+                for c in range(c_prev):
+                    vert_start = h * sh
+                    vert_end = vert_start + kh
+                    horiz_start = w * sw
+                    horiz_end = horiz_start + kw
 
-    if padding == 'same':
-        dA_prev = dA_prev_padded[:, ph:h_prev+ph, pw:w_prev+pw, :]
-    else:
-        dA_prev = dA_prev_padded
+                    a_slice = a_prev_pad[vert_start:vert_end,
+                                         horiz_start:horiz_end, :]
+
+                    dA_prev_pad[vert_start:vert_end,
+                                horiz_start:horiz_end,
+                                :] += W[:, :, :, c] * dZ[i, h, w, c]
+                    dW[:, :, :, c] += a_slice * dZ[i, h, w, c]
+                    db[:, :, :, c] += dZ[i, h, w, c]
+
+        if padding == "same":
+            dA_prev[i, :, :, :] = dA_prev_pad[pad_h:h_prev + pad_h,
+                                              pad_w:w_prev + pad_w, :]
+        elif padding == "valid":
+            dA_prev[i, :, :, :] = dA_prev_pad
 
     return dA_prev, dW, db
