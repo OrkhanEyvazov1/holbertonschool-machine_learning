@@ -13,8 +13,8 @@ def inception_network():
     """
     X_input = K.Input(shape=(224, 224, 3))
     conv_7x7 = K.layers.Conv2D(filters=64, kernel_size=7,
-                                strides=2, padding='same',
-                                activation='relu')(X_input)
+                               strides=2, padding='same',
+                               activation='relu')(X_input)
     max_pool_1 = K.layers.MaxPooling2D(pool_size=3, strides=2,
                                        padding='same')(conv_7x7)
     conv_1x1 = K.layers.Conv2D(filters=64, kernel_size=1,
@@ -37,7 +37,7 @@ def inception_network():
     incp_4c = inception_block(incp_4b, filters)
     filters = (112, 144, 288, 32, 64, 64)
     incp_4d = inception_block(incp_4c, filters)
-    filters = (256, 160, 320,32, 128, 128)
+    filters = (256, 160, 320, 32, 128, 128)
     incp_4e = inception_block(incp_4d, filters)
     max_pool_4 = K.layers.MaxPooling2D(pool_size=3, strides=2,
                                        padding='same')(incp_4e)
@@ -46,7 +46,7 @@ def inception_network():
     filters = (384, 192, 384, 48, 128, 128)
     incp_5b = inception_block(incp_5a, filters)
     avg_pool = K.layers.AveragePooling2D(pool_size=7, strides=1,
-                                        padding='valid')(incp_5b)
+                                         padding='valid')(incp_5b)
     dropout = K.layers.Dropout(rate=0.4)(avg_pool)
     softmax = K.layers.Dense(units=1000, activation='softmax')(dropout)
     return K.Model(inputs=X_input, outputs=softmax)
