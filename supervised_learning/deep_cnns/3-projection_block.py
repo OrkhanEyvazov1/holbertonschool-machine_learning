@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
-"""3-projection_block.py   
-"""
+"""3-projection_block.py"""
 from tensorflow import keras as K
 
 
