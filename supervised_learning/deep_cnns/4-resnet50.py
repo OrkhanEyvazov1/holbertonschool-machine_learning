@@ -43,6 +43,8 @@ def resnet50():
     proj_block_4 = projection_block(id_block_3e, filters)
     id_block_4a = identity_block(proj_block_4, filters)
     id_block_4b = identity_block(id_block_4a, filters)
-    avg_pool = K.layers.AveragePooling2D(pool_size=7, strides=1, padding='valid')(id_block_4b)
-    softmax = K.layers.Dense(units=1000, activation='softmax', kernel_initializer=initializer)(avg_pool)
+    avg_pool = K.layers.AveragePooling2D(pool_size=7, strides=1,
+                                         padding='valid')(id_block_4b)
+    softmax = K.layers.Dense(units=1000, activation='softmax',
+                             kernel_initializer=initializer)(avg_pool)
     return K.Model(inputs=X_input, outputs=softmax)
