@@ -12,7 +12,8 @@ def dense_block(X, nb_filters, growth_rate, layers):
     :param growth_rate: the growth rate for the dense block
     :param layers: the number of layers in the dense block
     :return: the concatenated output of each layer in the dense block and
-             the number of filters within the concatenated outputs, respectively
+             the number of filters within the concatenated outputs,
+             respectively
     """
     initializer = K.initializers.HeNormal(seed=0)
     for i in range(layers):
