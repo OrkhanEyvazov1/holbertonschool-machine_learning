@@ -15,13 +15,15 @@ def densenet121(growth_rate=32, compression=1.0):
     X_input = K.Input(shape=(224, 224, 3))
     nb_filters = 2 * growth_rate
     initializer = K.initializers.HeNormal(seed=0)
+
+    norm_0 = K.layers.BatchNormalization(axis=3)(X_input)
+    act_0 = K.layers.Activation('relu')(norm_0)
+
     conv_7x7 = K.layers.Conv2D(filters=nb_filters, kernel_size=7, strides=2,
                                padding='same', kernel_initializer=initializer)(
-        X_input)
-    norm_1 = K.layers.BatchNormalization(axis=3)(conv_7x7)
-    act_1 = K.layers.Activation('relu')(norm_1)
+        act_0)
     max_pool = K.layers.MaxPooling2D(pool_size=3, strides=2,
-                                     padding='same')(act_1)
+                                     padding='same')(conv_7x7)
 
     layers = [6, 12, 24, 16]
     dense_block_1, nb_filters = dense_block(max_pool, nb_filters,
@@ -42,12 +44,8 @@ def densenet121(growth_rate=32, compression=1.0):
     dense_block_4, nb_filters = dense_block(transition_layer_3, nb_filters,
                                             growth_rate, layers[3])
 
-    norm_5 = K.layers.BatchNormalization(axis=3)(dense_block_4)
-    act_5 = K.layers.Activation('relu')(norm_5)
-
     avg_pool = K.layers.AveragePooling2D(pool_size=7, strides=1,
-                                         padding='valid')(act_5)
-    flatten = K.layers.Flatten()(avg_pool)
+                                         padding='valid')(dense_block_4)
     softmax = K.layers.Dense(units=1000, activation='softmax',
-                             kernel_initializer=initializer)(flatten)
+                             kernel_initializer=initializer)(avg_pool)
     return K.Model(inputs=X_input, outputs=softmax)
