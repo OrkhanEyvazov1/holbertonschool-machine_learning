@@ -27,7 +27,8 @@ class Yolo(K.Model):
         super().__init__()
         self.model = K.models.load_model(model_path)
         with open(classes_path, 'r') as f:
-            self.class_names = list([line.strip() for line in f.readlines()])
+            class_names = [line.strip() for line in f.readlines()]
+            object.__setattr__(self, 'class_names', class_names)
         self.class_t = class_t
         self.nms_t = nms_t
         self.anchors = anchors
