@@ -36,24 +36,29 @@ class Yolo(K.Model):
             x_indices = np.arange(grid_width)
             y_indices = np.arange(grid_height).reshape(-1, 1)
 
-            box[..., 0] = (
+            x_center = (
                 (1 / (1 + np.exp(-output[..., 0]))) + x_indices
             ) * image_width / grid_width
-            box[..., 1] = (
+            y_center = (
                 (1 / (1 + np.exp(-output[..., 1]))) + y_indices
             ) * image_height / grid_height
-            box[..., 2] = (
+            box_width = (
                 anchor_boxes[..., 0]
                 * np.exp(output[..., 2])
                 * image_width
                 / model_width
             )
-            box[..., 3] = (
+            box_height = (
                 anchor_boxes[..., 1]
                 * np.exp(output[..., 3])
                 * image_height
                 / model_height
             )
+
+            box[..., 0] = x_center - box_width / 2
+            box[..., 1] = y_center - box_height / 2
+            box[..., 2] = x_center + box_width / 2
+            box[..., 3] = y_center + box_height / 2
 
             boxes.append(box)
             box_confidences.append(1 / (1 + np.exp(-output[..., 4:5])))
