@@ -19,49 +19,54 @@ class Yolo(K.Model):
         self.anchors = anchors
 
     def process_outputs(self, outputs, image_size):
-        """Process Darknet model outputs for a single image."""
+        """Process Darknet model outputs"""
         boxes = []
         box_confidences = []
         box_class_probs = []
 
-        image_height, image_width = image_size
-        model_height = self.model.input.shape[1]
-        model_width = self.model.input.shape[2]
+        input_w = self.model.input.shape[1]
+        input_h = self.model.input.shape[2]
 
-        for output, anchor_boxes in zip(outputs, self.anchors):
-            grid_height, grid_width, num_anchors, _ = output.shape
+        image_h = image_size[0]
+        image_w = image_size[1]
 
-            box = np.zeros((grid_height, grid_width, num_anchors, 4))
+        for i, output in enumerate(outputs):
+            grid_h = output.shape[0]
+            grid_w = output.shape[1]
+            anchor_boxes = output.shape[2]
 
-            x_indices = np.arange(grid_width)
-            y_indices = np.arange(grid_height).reshape(-1, 1)
+            t_x = output[..., 0]
+            t_y = output[..., 1]
+            t_w = output[..., 2]
+            t_h = output[..., 3]
 
-            x_center = (
-                (1 / (1 + np.exp(-output[..., 0]))) + x_indices
-            ) * image_width / grid_width
-            y_center = (
-                (1 / (1 + np.exp(-output[..., 1]))) + y_indices
-            ) * image_height / grid_height
-            box_width = (
-                anchor_boxes[..., 0]
-                * np.exp(output[..., 2])
-                * image_width
-                / model_width
-            )
-            box_height = (
-                anchor_boxes[..., 1]
-                * np.exp(output[..., 3])
-                * image_height
-                / model_height
-            )
+            c_x = np.arange(grid_w).reshape(1, grid_w, 1)
+            c_x = np.tile(c_x, (grid_h, 1, anchor_boxes))
 
-            box[..., 0] = x_center - box_width / 2
-            box[..., 1] = y_center - box_height / 2
-            box[..., 2] = x_center + box_width / 2
-            box[..., 3] = y_center + box_height / 2
+            c_y = np.arange(grid_h).reshape(grid_h, 1, 1)
+            c_y = np.tile(c_y, (1, grid_w, anchor_boxes))
 
+            b_x = (1 / (1 + np.exp(-t_x)) + c_x) / grid_w
+            b_y = (1 / (1 + np.exp(-t_y)) + c_y) / grid_h
+
+            anchor_w = self.anchors[i, :, 0].reshape((1, 1, anchor_boxes))
+            anchor_h = self.anchors[i, :, 1].reshape((1, 1, anchor_boxes))
+
+            b_w = (np.exp(t_w) * anchor_w) / input_w
+            b_h = (np.exp(t_h) * anchor_h) / input_h
+
+            x1 = (b_x - (b_w / 2)) * image_w
+            y1 = (b_y - (b_h / 2)) * image_h
+            x2 = (b_x + (b_w / 2)) * image_w
+            y2 = (b_y + (b_h / 2)) * image_h
+
+            box = np.stack((x1, y1, x2, y2), axis=-1)
             boxes.append(box)
-            box_confidences.append(1 / (1 + np.exp(-output[..., 4:5])))
-            box_class_probs.append(1 / (1 + np.exp(-output[..., 5:])))
+
+            box_confidence = 1 / (1 + np.exp(-output[..., 4:5]))
+            box_confidences.append(box_confidence)
+
+            box_class_prob = 1 / (1 + np.exp(-output[..., 5:]))
+            box_class_probs.append(box_class_prob)
 
         return boxes, box_confidences, box_class_probs
