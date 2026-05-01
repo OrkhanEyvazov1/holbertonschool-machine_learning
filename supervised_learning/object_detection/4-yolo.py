@@ -156,7 +156,6 @@ class Yolo(K.Model):
         area_u = area_1 + area_2 - area_i
         ious = area_i / area_u
         return ious
-    
     @staticmethod
     def load_images(folder_path):
         """Load all images from a folder"""
@@ -172,4 +171,3 @@ class Yolo(K.Model):
                     image_paths.append(path)
 
         return images, image_paths
-    
