@@ -71,7 +71,7 @@ class Yolo(K.Model):
 
         return boxes, box_confidences, box_class_probs
 
-    def filter_boxes(self, boxes, box_confidences, box_class_probs): 
+    def filter_boxes(self, boxes, box_confidences, box_class_probs):
         """Filter boxes with object threshold."""
         filtered_boxes = []
         box_classes = []
