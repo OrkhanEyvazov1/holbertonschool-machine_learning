@@ -124,4 +124,51 @@ class Yolo(K.Model):
                 cls_box_scores = cls_box_scores[idxs_to_keep]
 
         return np.array(nms_boxes), np.array(nms_classes), np.array(nms_scores)
+
+    def iou(self, box1, boxes):
+        """Calculate Intersection over Union (IoU) manually.
+        
+        Args:
+            box1: single box with shape (4,) containing [x1, y1, x2, y2]
+            boxes: multiple boxes with shape (N, 4) where each is [x1, y1, x2, y2]
+        
+        Returns:
+            ious: array of IoU values with shape (N,)
+        """
+        # Extract coordinates from box1
+        x1_1 = box1[0]
+        y1_1 = box1[1]
+        x2_1 = box1[2]
+        y2_1 = box1[3]
+        
+        # Extract coordinates from all boxes
+        x1_2 = boxes[:, 0]
+        y1_2 = boxes[:, 1]
+        x2_2 = boxes[:, 2]
+        y2_2 = boxes[:, 3]
+        
+        # Calculate intersection box coordinates
+        x1_i = np.maximum(x1_1, x1_2)
+        y1_i = np.maximum(y1_1, y1_2)
+        x2_i = np.minimum(x2_1, x2_2)
+        y2_i = np.minimum(y2_1, y2_2)
+        
+        # Calculate intersection area
+        w_i = np.maximum(0, x2_i - x1_i)
+        h_i = np.maximum(0, y2_i - y1_i)
+        area_i = w_i * h_i
+        
+        # Calculate area of box1
+        area_1 = (x2_1 - x1_1) * (y2_1 - y1_1)
+        
+        # Calculate areas of all boxes
+        area_2 = (x2_2 - x1_2) * (y2_2 - y1_2)
+        
+        # Calculate union area
+        area_u = area_1 + area_2 - area_i
+        
+        # Calculate IoU
+        ious = area_i / area_u
+        
+        return ious
     
