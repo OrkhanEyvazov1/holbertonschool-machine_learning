@@ -113,14 +113,16 @@ class NST:
         return result / num_locations
 
     def generate_features(self):
-        """
-        extracts the features used to calculate neural style cost
-        """
-        content_image = tf.keras.applications.vgg19.preprocess_input(
-            self.content_image * 255)
+        """function that extracts the style and content features
+        used to calculate the neural style cost"""
         style_image = tf.keras.applications.vgg19.preprocess_input(
             self.style_image * 255)
-        style_outputs = self.model(style_image)
-        self.gram_style_features = [self.gram_matrix(style_feature)
-                                    for style_feature in style_outputs[:-1]]
-        self.content_feature = self.model(content_image)[-1]
+        content_image = tf.keras.applications.vgg19.preprocess_input(
+            self.content_image * 255)
+        outputs_style = self.model(style_image)
+        style_outputs = outputs_style[:-1]
+        outputs_content = self.model(content_image)
+        content_ouput = outputs_content[-1]
+        self.gram_style_features = [self.gram_matrix(style_output)
+                                    for style_output in style_outputs]
+        self.content_feature = content_ouput
