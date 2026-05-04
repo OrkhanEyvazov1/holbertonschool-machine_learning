@@ -7,6 +7,15 @@ import tensorflow as tf
 class NST:
     """Neural style transfer."""
 
+    style_layers = [
+        "block1_conv1",
+        "block2_conv1",
+        "block3_conv1",
+        "block4_conv1",
+        "block5_conv1"
+    ]
+    content_layer = "block5_conv2"
+
     def __init__(self, style_image, content_image, alpha=1e4, beta=1):
         """Initialize the class."""
         if (not isinstance(style_image, np.ndarray) or
@@ -31,6 +40,8 @@ class NST:
         self.content_image = self.scale_image(content_image)
         self.alpha = alpha
         self.beta = beta
+        self.style_layers = NST.style_layers
+        self.content_layer = NST.content_layer
 
     @staticmethod
     def scale_image(image):
@@ -41,6 +52,7 @@ class NST:
                 "image must be a numpy.ndarray with shape (h, w, 3)"
             )
 
+        image = tf.convert_to_tensor(image, dtype=tf.float32)
         h, w, _ = image.shape
         if h > 512 or w > 512:
             if h >= w:
