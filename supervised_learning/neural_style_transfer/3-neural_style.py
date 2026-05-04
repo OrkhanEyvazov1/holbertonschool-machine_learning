@@ -107,10 +107,11 @@ class NST:
                 len(input_layer.shape) == 4):
             raise TypeError("input_layer must be a tensor of rank 4")
 
-        result = tf.linalg.einsum('bijc,bijd->bcd', input_layer, input_layer)
-        input_shape = tf.shape(input_layer)
-        num_locations = tf.cast(input_shape[1] * input_shape[2], tf.float32)
-        return result / num_locations
+        channels = int(input_layer.shape[-1])
+        a = tf.reshape(input_layer, [-1, channels])
+        n = tf.shape(a)[0]
+        gram = tf.matmul(a, a, transpose_a=True)
+        return tf.expand_dims(gram / tf.cast(n, tf.float32), 0)
 
     def generate_features(self):
         """function that extracts the style and content features
@@ -119,10 +120,17 @@ class NST:
             self.style_image * 255)
         content_image = tf.keras.applications.vgg19.preprocess_input(
             self.content_image * 255)
+
+        # Style features are extracted from the style image
         outputs_style = self.model(style_image)
-        style_outputs = outputs_style[1:]
+        # Content feature is extracted from the content image
         outputs_content = self.model(content_image)
+
+        # In self.model we did outputs=[content_output] + style_outputs
+        # Hence index 0 is content, index 1: is style layers
+        style_outputs = outputs_style[1:]
         content_output = outputs_content[0]
+
         self.gram_style_features = [self.gram_matrix(style_output)
                                     for style_output in style_outputs]
         self.content_feature = content_output
