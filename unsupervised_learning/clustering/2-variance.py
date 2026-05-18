@@ -17,7 +17,7 @@ def variance(X, C):
             return None
 
         distances = np.linalg.norm(X[:, np.newaxis] - C, axis=-1)
-        min_distances = np.min(distances, axis=-1) 
+        min_distances = np.min(distances, axis=-1)
         return np.sum(min_distances ** 2)
     except Exception:
         return None
