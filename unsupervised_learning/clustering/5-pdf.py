@@ -14,7 +14,10 @@ def pdf(X, m, S):
         return None
     if not isinstance(S, np.ndarray) or len(S.shape) != 2:
         return None
-    if X.shape[1] != m.shape[0] or X.shape[1] != S.shape[0] or S.shape[0] != S.shape[1]:
+    cond1 = X.shape[1] != m.shape[0]
+    cond2 = X.shape[1] != S.shape[0]
+    cond3 = S.shape[0] != S.shape[1]
+    if cond1 or cond2 or cond3:
         return None
     n, d = X.shape
     det_S = np.linalg.det(S)
