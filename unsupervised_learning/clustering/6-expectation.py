@@ -33,6 +33,10 @@ def expectation(X, pi, m, S):
     k = pi.shape[0]
     if m.shape != (k, d) or S.shape != (k, d, d):
         return None, None
+    if np.any(pi < 0) or not np.isclose(np.sum(pi), 1):
+        return None, None
+    if np.any(np.linalg.det(S) <= 0):
+        return None, None
     g = np.zeros((k, n))
     for i in range(k):
         g[i] = pi[i] * pdf(X, m[i], S[i])
