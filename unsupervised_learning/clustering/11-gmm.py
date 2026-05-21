@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """11-gmm.py"""
-from sklearn.mixture
+import sklearn.mixture
 
 
 def gmm(X, k):
