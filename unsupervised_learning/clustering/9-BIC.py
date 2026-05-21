@@ -48,10 +48,10 @@ def BIC(X, kmin=1, kmax=None, iterations=1000, tol=1e-5, verbose=False):
         p = k * d * (d + 1) / 2 + d * k + (k - 1)
         bic = p * np.log(n) - 2 * ll
         b_list.append(bic)
-    l = np.array(l_list)
+    ll = np.array(l_list)
     b = np.array(b_list)
     best_idx = np.argmin(b)
     best_k = kmin + best_idx
     best_result = results[best_idx]
 
-    return best_k, best_result, l, b
+    return best_k, best_result, ll, b
