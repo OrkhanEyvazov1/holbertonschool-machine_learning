@@ -1,21 +1,21 @@
 #!/usr/bin/env python3
 """
-0-gp.py
+Gaussian process
 """
 import numpy as np
 
 
-class GaussianProcess():
+class GaussianProcess:
     """
-    GaussianProcess class represents a noiseless 1D Gaussian process
+    Gaussian process class
     """
-    def __init__(self, X_init, Y_init, ll=1, sigma_f=1):
+    def __init__(self, X_init, Y_init, l=1, sigma_f=1):
         """
-        Class constructor
+        init function
         """
         self.X = X_init
         self.Y = Y_init
-        self.l = ll
+        self.l = l
         self.sigma_f = sigma_f
         self.K = self.kernel(self.X, self.X)
 
