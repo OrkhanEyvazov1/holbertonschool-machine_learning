@@ -21,10 +21,11 @@ class GaussianProcess():
 
     def kernel(self, X1, X2):
         """
-        calculates the covariance kernel matrix
-        between two matrices
+        calculating the covariance kernel
+        which is basically the eucleudian distance
         """
-        sqdist = np.sum(X1 ** 2, axis=1).reshape(-1, 1)
-        sqdist += np.sum(X2 ** 2, axis=1)
-        sqdist -= 2 * np.matmul(X1, X2.T)
-        return (self.sigma_f ** 2) * np.exp(-0.5 / (self.l ** 2) * sqdist)
+        sqdist1 = np.sum(X1**2, 1).reshape(-1, 1) + np.sum(X2**2, 1)
+        sqdist2 = 2 * np.dot(X1, X2.T)
+        sqdist = sqdist1 - sqdist2
+        k = self.sigma_f**2 * np.exp(-0.5 / self.l**2 * sqdist)
+        return k
