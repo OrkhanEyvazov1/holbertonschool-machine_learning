@@ -3,7 +3,6 @@
 Performs Bayesian optimization on a noiseless 1D Gaussian process
 """
 import numpy as np
-
 GP = __import__('2-gp').GaussianProcess
 
 
