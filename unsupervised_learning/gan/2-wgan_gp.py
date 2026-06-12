@@ -120,7 +120,6 @@ class WGAN_GP(keras.Model):
 
         return tf.reduce_mean((norm - 1.0) ** 2)
 
-
     def train_step(self, useless_argument):
         """
             function to train WGAN_GP
